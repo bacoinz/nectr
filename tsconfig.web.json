@@ -1,0 +1,25 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "lib": [
+      "ES2024",
+      "DOM",
+      "DOM.Iterable",
+      "WebWorker.ImportScripts"
+    ],
+    "types": [
+      "vite/client",
+      "svelte"
+    ],
+    "allowJs": true,
+    "checkJs": true
+  },
+  "include": [
+    "src/web/**/*.ts",
+    "src/web/**/*.svelte",
+    "src/shared/**/*.ts"
+  ],
+  "exclude": [
+    "src/**/*.test.ts"
+  ]
+}

@@ -1,0 +1,324 @@
+/* Real-app layout: the mockup's framed window becomes the viewport. */
+
+/* ---------- Owner app: full-height rail, only the main column scrolls ---------- */
+.app {
+  display: grid;
+  grid-template-columns: 232px minmax(0, 1fr);
+  /* main, then the mini player bar (when something is playing) */
+  grid-template-rows: minmax(0, 1fr) auto;
+  height: 100dvh;
+  overflow: clip;
+  transition: grid-template-columns 0.34s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.app .rail { grid-row: 1 / -1; min-height: 0; overflow-y: auto; scrollbar-width: none; }
+.app.rail-mini .rail { overflow: visible; }
+.main { position: relative; min-width: 0; min-height: 0; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--line) transparent; }
+.scrim { position: fixed; }
+.rail-tree-empty { padding: 4px 8px 4px 32px; font-size: 13px; color: var(--fg-faint); }
+.page-loading { padding: 60px 24px; text-align: center; color: var(--fg-muted); }
+.page-error { padding: 60px 24px; display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; color: var(--fg-muted); }
+.page-error h1 { color: var(--fg); font-size: 20px; }
+
+/* The mockup turned the rail into a top bar under 920 px; the app keeps the
+   full-height rail (folded to icons by itself here, see AdminApp) down to 761 px. */
+@media (min-width: 761px) and (max-width: 920px) {
+  .app { grid-template-columns: 232px minmax(0, 1fr); }
+  .app.rail-mini { grid-template-columns: 64px minmax(0, 1fr); }
+  .rail { flex-direction: column; align-items: stretch; gap: 22px; padding: 18px 14px; border-right: 1px solid var(--line); border-bottom: 0; overflow-x: visible; }
+  .app.rail-mini .rail { padding: 16px 8px; align-items: center; gap: 16px; }
+  .rail-nav { flex-direction: column; align-items: stretch; }
+  .rail .tree-toggle { display: grid; }
+  .rail .tree-children { display: flex; }
+  .rail-sep { display: block; }
+  .storage, .owner { display: flex; }
+  .app.rail-mini .rail .tree-toggle, .app.rail-mini .rail .tree-children, .app.rail-mini .storage { display: none; }
+  .rail-fold { display: grid !important; }
+}
+
+/* Owner on the phone: the rail becomes a bottom tab bar. */
+.tabbar { display: none; }
+@media (max-width: 760px) {
+  .app, .app.rail-mini { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) auto auto; }
+  .app .rail { display: none; }
+  .tabbar { display: grid; padding: 6px 4px calc(4px + env(safe-area-inset-bottom, 0px)); }
+  .app.on-track .tabbar { display: none; }
+}
+
+/* Phone: a touch larger than the mockup, and no dead space under the bottom bars. */
+@media (max-width: 760px) {
+  .mshell .ph-bar { gap: 8px; }
+  .ph-bar .tbtn { width: 48px; height: 48px; }
+  .ph-bar .tbtn svg { width: 22px; height: 22px; }
+  .ph-bar .play.sm { width: 58px; height: 58px; }
+  .m-row, .gtrack { padding-block: 13px; }
+  .m-row .t, .gtrack .t { font-size: 16.5px; }
+  .m-row .s, .gtrack .s { font-size: 13.5px; }
+  .m-row .n, .gtrack .n { font-size: 14px; }
+  .m-section { font-size: 12.5px; }
+  .m-back, .ph-back { font-size: 15px; }
+  .ph-title { font-size: 25px; }
+  .ph-tab { font-size: 15.5px; }
+  .ph-versions .vchip { font-size: 14.5px; padding: 7px 14px; }
+  .ph-zoom .tbtn { width: 40px; height: 40px; }
+  .ph-times { font-size: 13.5px; }
+  .miniplayer .art { width: 46px; }
+  .miniplayer .t { font-size: 15.5px; }
+  .miniplayer .s { font-size: 13.5px; }
+  .miniplayer .play.xs { width: 44px; height: 44px; }
+}
+
+/* ---------- Guest ---------- */
+.guest-desk { display: flex; flex-direction: column; height: 100dvh; }
+.guest-desk .gapp { flex: 1; min-height: 0; }
+.guest-desk .gside, .guest-desk .gmain, .guest-desk .gaside { min-height: 0; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--line) transparent; }
+.guest-desk .gaside { overflow-x: clip; }
+/* The mobile layout is the mockup's phone without the frame. */
+.mshell { --proj: var(--proj-main); position: relative; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; background: var(--bg); }
+.mshell .ph-scroll { position: relative; flex: 1; min-height: 0; overflow: auto; scrollbar-width: none; }
+/* Bottom bars: no dead space under them (safe area only where the phone has one). */
+.mshell .ph-bar { padding: 8px 10px calc(8px + env(safe-area-inset-bottom, 0px)); }
+.mshell .miniplayer { padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px)); }
+.mshell .vis-toggle { width: 36px; padding: 0; justify-content: center; }
+.mshell .vis-toggle span { display: none; }
+.mshell.at-album .album-page { transform: none; opacity: 1; }
+.mshell.at-album .player-page { transform: translateX(102%); box-shadow: none; }
+.gate-page { min-height: 100dvh; display: flex; }
+.gate-page .gate { position: relative; }
+
+
+/* Links: the mockup's 1180 px breakpoint assumed no rail; with the 232 px rail the
+   four fixed columns need about 1440 px of window before they fit. */
+@media (max-width: 1440px) {
+  .lhead { display: none; }
+  .lrow2 { grid-template-columns: minmax(0, 1fr) auto; }
+  .lrow2 .perms { grid-column: 1; }
+  .lrow2 .lexp { grid-column: 2; grid-row: 1; }
+  .lrow2 .actions { grid-column: 1 / -1; justify-content: flex-start; }
+}
+
+/* Artist/project page: the body fills the window, so the selection rectangle starts
+   anywhere down to the bottom, and the selection bar and "view as guest" stay there. */
+.page-fill { min-height: 100%; display: flex; flex-direction: column; }
+.page-fill > .proj-body { flex: 1; display: flex; flex-direction: column; padding-bottom: 0; user-select: none; -webkit-user-select: none; }
+.page-fill .select-zone { flex: 1; }
+.page-foot { position: sticky; bottom: 0; z-index: 6; display: grid; grid-template-columns: 1fr auto 1fr; align-items: end; gap: 12px; padding: 10px 0 20px; pointer-events: none; }
+.page-foot > * { pointer-events: auto; }
+.page-foot .selbar { grid-column: 2; position: static; margin: 0; }
+.page-foot .fab { grid-column: 3; justify-self: end; }
+
+/* Versions under a track: the original file name first, then the number. */
+.vname { display: inline-flex; align-items: baseline; gap: 8px; max-width: 52ch; }
+.vname b { overflow: hidden; text-overflow: ellipsis; }
+.vname .vnum { flex: none; color: var(--fg-muted); font-weight: 600; font-size: 13px; }
+
+/* Project covers as small thumbnails in lists and tables. */
+.art.thumb { width: 26px; border-radius: 7px; flex: none; box-shadow: none; }
+
+/* The name column takes the space left over (max-width: 0 in the mockup); on narrow
+   windows it keeps enough room to read, and the table scrolls sideways instead. */
+.tracks th[data-col="name"], .tracks td.name { min-width: 220px; }
+/* The projects/folders table has few columns: no need for the track table's 940 px. */
+table.tracks.ftable { min-width: 0; }
+table.tracks.ftable th[data-col="name"], table.tracks.ftable td.name { min-width: 160px; }
+
+/* Voice notes: the bars fill as the note plays (the mockup animated them on a timer). */
+.voice.is-playing .bars i { animation: none; }
+.voice .bars i.on { background: var(--accent); }
+.voice:disabled { opacity: 0.6; }
+/* Comments: the composer sits inside the panel; the reply banner is part of it. */
+.comments .composer-wrap .reply-banner { margin-top: 2px; }
+.tchip:disabled { opacity: 1; cursor: default; }
+
+/* Recording: the microphone's level across the whole field. */
+.reclayer .bars.meter { flex: 1; min-width: 0; gap: 2px; }
+.bars.meter i { flex: 1 1 0; width: auto; min-width: 1px; background: var(--rec); height: calc(var(--h) * 1%); animation: none; transition: height 0.08s linear; }
+
+/* Range comments (and the range being picked) painted over the waveform. */
+.wrange { position: absolute; top: var(--mh, 32px); bottom: 0; pointer-events: none; border-radius: 3px; background: color-mix(in oklab, var(--rc) 14%, transparent); border-inline: 1px solid color-mix(in oklab, var(--rc) 50%, transparent); }
+.wrange.strong { background: color-mix(in oklab, var(--rc) 26%, transparent); border-color: var(--rc); }
+
+/* Revisões on a phone: the request text uses the whole width under the time. */
+@media (max-width: 560px) {
+  .ritem .rtext { grid-column: 2; }
+}
+.ritem .reply { margin-top: 6px; }
+.ritem-reply { grid-column: 1 / -1; }
+
+/* Play buttons in track lists: the only way a track starts on its own when opened. */
+.tracks .num button.ico { border: 0; background: none; padding: 0; color: var(--fg); width: 22px; height: 22px; place-items: center; cursor: pointer; }
+.trk .n .pi { display: none; color: var(--fg); }
+.trk:hover .n .pi { display: inline-grid; }
+.trk:hover .n .num { display: none; }
+.mplay { width: 26px; height: 26px; border-radius: 50%; border: 1px solid var(--line); display: inline-grid; place-items: center; color: var(--fg-muted); justify-self: center; }
+.mplay:active { background: var(--surface-2); color: var(--fg); }
+
+/* "A responder a …" reads as one line of text that wraps, not as separate boxes. */
+.reply-banner > span { display: block; min-width: 0; }
+.reply-banner > span svg { vertical-align: -2px; margin-right: 6px; }
+/* On a phone the private/public switch is the icon alone, leaving room to write. */
+@media (max-width: 760px) {
+  .vis-toggle { width: 36px; padding: 0; justify-content: center; }
+  .vis-toggle span { display: none; }
+}
+
+/* ---------- Lyrics ---------- */
+.ly-gap { height: 6px; }
+button.ly:hover { color: var(--fg-muted); }
+button.ly.is-active:hover { color: var(--fg); }
+/* Lyrics without times: plain text, easy to read. */
+.lyrics.plain { gap: 2px; }
+.lyrics.plain .ly { font-family: var(--font-body); font-size: 16px; font-weight: 600; letter-spacing: 0; line-height: 1.45; color: var(--fg); }
+.lyrics.plain .ly-gap { height: 14px; }
+/* Editor: tap "Marcar" as each line starts. */
+.lysync-bar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.lysync-bar .mono { font-variant-numeric: tabular-nums; }
+.lysync { max-height: 46vh; overflow: auto; border: 1px solid var(--line); border-radius: 14px; padding: 6px; display: flex; flex-direction: column; gap: 2px; }
+.lyrow { display: grid; grid-template-columns: 76px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 5px 8px; border-radius: 10px; }
+.lyrow.is-cursor { background: color-mix(in oklab, var(--accent) 14%, transparent); box-shadow: inset 3px 0 0 var(--accent); }
+.lyrow.is-bad .stamp { background: color-mix(in oklab, var(--rec) 25%, var(--surface-2)); color: var(--rec); }
+.lyrow .stamp { justify-self: start; }
+.lyrow .stamp:disabled { opacity: 0.55; cursor: default; }
+.lytext { border: 0; background: none; padding: 0; text-align: left; font-weight: 600; font-size: 15px; color: var(--fg); min-width: 0; overflow-wrap: anywhere; }
+.lynudge { display: flex; gap: 4px; }
+.lynudge .iconbtn { width: 28px; height: 28px; font-weight: 700; font-size: 16px; }
+.lyrow-gap { height: 8px; }
+@media (max-width: 560px) {
+  .lyrow { grid-template-columns: 70px minmax(0, 1fr); }
+  .lynudge { grid-column: 2; }
+}
+
+/* ---------- Finishing: search, help, offline ---------- */
+.rail-nav button.navbtn { display: flex; align-items: center; gap: 11px; padding: 9px 10px; border-radius: 10px; border: 0; background: none; color: var(--fg-muted); font-weight: 600; font-size: 14.5px; white-space: nowrap; text-align: left; width: 100%; }
+.rail-nav button.navbtn:hover { color: var(--fg); }
+.rail-nav button.navbtn kbd { margin-left: auto; font: 600 11px var(--font-mono); color: var(--fg-faint); border: 1px solid var(--line); border-radius: 6px; padding: 1px 5px; }
+.app.rail-mini .rail-nav button.navbtn { flex: none; width: 44px; height: 40px; justify-content: center; padding: 0; gap: 0; }
+.qmark { display: inline-grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; border: 1.8px solid currentColor; font: 800 11px/1 var(--font-body); }
+.search-scrim { align-items: flex-start; padding-top: min(14vh, 120px); }
+.search-dialog { width: min(620px, 100%); overflow: hidden; }
+.search-box { display: flex; align-items: center; gap: 10px; padding: 12px 12px 12px 18px; border-bottom: 1px solid var(--line); color: var(--fg-muted); }
+.search-box input { flex: 1; min-width: 0; border: 0; background: none; font-size: 17px; color: var(--fg); padding: 6px 0; }
+.search-box input:focus { outline: none; }
+.search-results { max-height: min(60vh, 520px); overflow: auto; padding: 6px; }
+.sr-group { padding: 10px 12px 4px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--fg-faint); }
+.sr-item { display: flex; align-items: center; gap: 12px; width: 100%; padding: 9px 12px; border: 0; border-radius: 10px; background: none; text-align: left; color: var(--fg); }
+.sr-item.is-sel { background: var(--surface-2); }
+.sr-icon { width: 30px; height: 30px; border-radius: 8px; display: grid; place-items: center; background: var(--surface-2); color: var(--fg-muted); flex: none; }
+.sr-item.is-sel .sr-icon { background: var(--bg); }
+.sr-text { min-width: 0; display: flex; flex-direction: column; }
+.sr-text b { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sr-text span { font-size: 13px; color: var(--fg-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sr-empty { padding: 22px 14px; color: var(--fg-muted); font-size: 14px; text-align: center; }
+@media (max-width: 760px) {
+  .search-scrim { padding: 0; }
+  .search-dialog { width: 100%; min-height: 100dvh; border-radius: 0; border: 0; }
+  .search-results { max-height: calc(100dvh - 70px); }
+}
+.help-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px 26px; }
+.help-grid h3 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--fg-muted); margin-bottom: 8px; }
+.help-grid ul, .help-list { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; font-size: 14px; color: var(--fg-muted); }
+.help-list b { color: var(--fg); }
+.keys { display: grid; grid-template-columns: auto 1fr; gap: 6px 12px; margin: 0; font-size: 14px; align-items: baseline; }
+.keys dd { margin: 0; color: var(--fg-muted); }
+kbd { font: 600 12px var(--font-mono); background: var(--surface-2); border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 6px; padding: 1px 6px; white-space: nowrap; }
+.offline-note { position: fixed; z-index: 9; top: calc(10px + env(safe-area-inset-top, 0px)); left: 50%; transform: translateX(-50%); width: max-content; max-width: calc(100% - 24px); padding: 8px 14px; border-radius: 12px; background: var(--fg); color: var(--bg); font-size: 13.5px; font-weight: 600; box-shadow: var(--shadow); }
+.album { position: relative; }
+.help-corner { position: absolute; top: 10px; right: 12px; display: flex; gap: 6px; }
+.help-corner .iconbtn { background: color-mix(in oklab, var(--bg) 40%, transparent); }
+.ph-actions { display: flex; align-items: center; gap: 4px; }
+
+/* Notifications: the bell on links, the profile block, the dialog. */
+.iconbtn.is-on { color: var(--accent); }
+.ov-block .help { font-size: 13px; color: var(--fg-muted); }
+.ov-block code { font-family: var(--font-mono, monospace); font-size: 12.5px; }
+.warn-text, .ov-block .help.warn-text, .alerts-text.warn-text { color: var(--warn); }
+.alerts-text { font-size: 14.5px; line-height: 1.5; color: var(--fg-muted); }
+.alerts-text + .alerts-text { margin-top: 10px; }
+.alerts-text b { color: var(--fg); }
+
+/* Volume (computers; touch screens use the device's buttons). */
+.volume { display: flex; align-items: center; gap: 2px; margin-right: 8px; }
+.vol-slider { -webkit-appearance: none; appearance: none; width: 92px; height: 18px; margin: 0; background: transparent; cursor: pointer; }
+.vol-slider::-webkit-slider-runnable-track { height: 4px; border-radius: 99px; background: linear-gradient(to right, var(--fg-muted) var(--v), var(--line) var(--v)); }
+.vol-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 12px; margin-top: -4px; border: 0; border-radius: 50%; background: var(--fg); }
+.vol-slider::-moz-range-track { height: 4px; border-radius: 99px; background: var(--line); }
+.vol-slider::-moz-range-progress { height: 4px; border-radius: 99px; background: var(--fg-muted); }
+.vol-slider::-moz-range-thumb { width: 12px; height: 12px; border: 0; border-radius: 50%; background: var(--fg); }
+.vol-slider:hover::-webkit-slider-runnable-track, .vol-slider:focus-visible::-webkit-slider-runnable-track { background: linear-gradient(to right, var(--accent) var(--v), var(--line) var(--v)); }
+.vol-slider:hover::-moz-range-progress, .vol-slider:focus-visible::-moz-range-progress { background: var(--accent); }
+.vol-slider:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
+@media (hover: none), (pointer: coarse) { .volume { display: none; } }
+
+/* A track's DAW project name (owner only), right after its title. */
+.sess { margin-left: 0.6em; font-size: 0.86em; font-style: italic; font-weight: 400; letter-spacing: 0; color: var(--fg-faint); }
+h2 .sess { font-family: var(--font-body); font-size: 15px; }
+
+/* Image cropper (covers, artist and profile photos): over any dialog. */
+.crop-scrim { z-index: 30; }
+.crop-dialog { width: min(440px, 100%); }
+.crop-frame { position: relative; width: 100%; aspect-ratio: 1; overflow: hidden; border-radius: 14px; background: #0b0b0f; touch-action: none; cursor: grab; user-select: none; -webkit-user-select: none; }
+.crop-frame:active { cursor: grabbing; }
+.crop-frame:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.crop-frame img { position: absolute; left: 0; top: 0; max-width: none; transform-origin: 0 0; pointer-events: none; user-select: none; }
+.crop-frame::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.22); pointer-events: none; }
+.crop-frame.round::after { border-radius: 50%; box-shadow: 0 0 0 9999px rgb(0 0 0 / 0.5), inset 0 0 0 1px rgb(255 255 255 / 0.3); }
+.crop-zoom { display: flex; align-items: center; gap: 10px; margin-top: 14px; color: var(--fg-muted); }
+.crop-zoom .vol-slider { flex: 1; width: auto; }
+
+/* A working project's "cover": its folder icon on a tint of its colour. */
+.art.is-icon { display: grid; place-items: center; background: color-mix(in oklab, var(--proj) 20%, var(--surface-2)); color: var(--proj); }
+.art.is-icon svg { width: clamp(14px, 44%, 64px); height: auto; }
+.art.is-icon::after { display: none; }
+
+/* Project kinds, track covers. */
+.kind-seg { flex-wrap: wrap; }
+.inline-thumb { display: inline-block; width: 22px; vertical-align: -6px; margin-right: 8px; border-radius: 5px; }
+.art.is-fallback { opacity: 0.55; }
+.tcover-head { display: flex; align-items: center; gap: 12px; }
+.tcover { flex: none; padding: 0; border: 0; background: none; border-radius: 10px; cursor: pointer; }
+.tcover .art { width: 46px; border-radius: 10px; }
+.tcover:hover .art, .tcover:focus-visible .art { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* Guest folders: closed rows that open a page of their own. */
+.gshelf { display: flex; flex-direction: column; gap: 18px; }
+.gback { display: inline-flex; align-items: center; gap: 6px; align-self: flex-start; padding: 6px 10px 6px 4px; border-radius: 999px; color: var(--fg-muted); font-weight: 700; font-size: 14px; text-decoration: none; }
+.gback:hover { background: var(--surface); color: var(--fg); }
+.gfolder-head { display: flex; gap: 14px; align-items: center; }
+.gfolder-head .art { width: 76px; flex: none; border-radius: 14px; }
+.gfolder { display: grid; grid-template-columns: 26px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 9px 10px; border-radius: 10px; color: inherit; text-decoration: none; }
+.gfolder:hover { background: var(--surface); }
+.gfolder .t, .gfolder-row .t { display: block; font-weight: 700; font-size: 14.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gfolder .s, .gfolder-row .s { display: block; font-size: 12px; color: var(--fg-faint); }
+.gfolder .art.thumb, .gfolder-row .art.thumb { width: 26px; }
+.album.album-folder { padding-top: 8px; }
+.album.album-folder .art { width: 150px; }
+
+/* Ordering the artists (home page). */
+.grid-projects .project { position: relative; }
+.project.is-dragging { opacity: 0.4; }
+.project.drop-before::before, .project.drop-after::after { content: ""; position: absolute; top: 0; bottom: 0; width: 3px; border-radius: 2px; background: var(--accent); }
+.project.drop-before::before { left: -12px; }
+.project.drop-after::after { right: -12px; }
+.m-card.is-ordering { position: relative; }
+.m-card .order-btns { display: flex; justify-content: space-between; gap: 6px; margin-top: 6px; }
+.m-card .order-btns .iconbtn:disabled { opacity: 0.3; }
+
+/* Player diary (Perfil). */
+.plog summary { cursor: pointer; font-size: 13.5px; color: var(--fg-muted); }
+.plog pre { margin-top: 8px; max-height: 260px; overflow: auto; padding: 10px; border-radius: 10px; background: var(--surface-2); font-family: var(--font-mono); font-size: 11px; line-height: 1.5; white-space: pre-wrap; word-break: break-word; }
+
+/* Who gave a name on a link (Links page). */
+.lpeople summary { cursor: pointer; font-size: 13px; color: var(--fg-muted); }
+.lpeople ul { list-style: none; margin: 8px 0 4px; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.lpeople li { display: flex; flex-wrap: wrap; gap: 4px 10px; font-size: 13.5px; }
+.lpeople li span { color: var(--fg-muted); font-size: 12.5px; }
+.lpeople .faint { font-size: 12px; }
+.lshares li.is-dead { opacity: 0.55; }
+.lshare-actions { display: inline-flex; gap: 10px; }
+
+/* A guest's shares of a link. */
+.gshares { margin-top: 16px; display: flex; flex-direction: column; gap: 8px; }
+.gshares ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.gshares li { display: flex; justify-content: space-between; align-items: center; gap: 10px; font-size: 14px; }
+.gshares li > span:first-child { display: flex; gap: 8px; min-width: 0; }
+.gshare-actions { display: inline-flex; gap: 10px; flex: none; }
+
