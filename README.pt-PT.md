@@ -1,4 +1,19 @@
+<div align="center">
+
+<img src="public/favicon.svg" alt="logo da nectr" width="96" height="96">
+
 # nectr
+
+**Partilha música por lançar em privado e recebe comentários presos ao segundo certo.**
+
+[Ter a tua](#ter-a-tua) · [Adaptar](docs/prompts.md) · [Setup](docs/setup.md) · [🇬🇧 English](README.md)
+
+<img src="docs/screenshots/admin-track-desktop.png" alt="Página da faixa do dono: forma de onda, leitor, loudness e versões" width="100%">
+
+</div>
+
+> [!NOTE]
+> **A interface está só em português de Portugal.** És livre de a traduzir para qualquer língua: o [docs/prompts.md](docs/prompts.md) tem um prompt pronto para isso.
 
 Um sítio privado para partilhar música por lançar e receber opinião sobre ela: a tua própria "cloud" de faixas, versões e links para ouvir, com comentários presos ao segundo certo. Corre na **tua** conta, nos planos gratuitos da Cloudflare. Não há assinatura e mais ninguém guarda a tua música.
 
