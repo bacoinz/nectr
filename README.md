@@ -7,7 +7,7 @@ Your own cloud of tracks, versions and listening links, on Cloudflare's free pla
 
 <a href="LICENSE.md"><img src="https://img.shields.io/badge/license-PolyForm%20Noncommercial-ff9f43?style=flat-square&labelColor=16161d" alt="License: PolyForm Noncommercial"></a> <img src="https://img.shields.io/badge/cost-0%20%E2%82%AC%2Fmonth-ff9f43?style=flat-square&labelColor=16161d" alt="Cost: 0 €/month"> <img src="https://img.shields.io/badge/Cloudflare-Workers%20%C2%B7%20D1%20%C2%B7%20R2-ff9f43?style=flat-square&logo=cloudflare&logoColor=white&labelColor=16161d" alt="Cloudflare Workers, D1, R2"> <img src="https://img.shields.io/badge/Svelte-5-ff9f43?style=flat-square&logo=svelte&logoColor=white&labelColor=16161d" alt="Svelte 5"> <img src="https://img.shields.io/badge/interface-Portugu%C3%AAs%20(PT)-ff9f43?style=flat-square&labelColor=16161d" alt="Interface: Portuguese"> <a href="https://ko-fi.com/bacoinz"><img src="https://img.shields.io/badge/Ko--fi-support%20nectr-ff9f43?style=flat-square&logo=kofi&logoColor=white&labelColor=16161d" alt="Support nectr on Ko-fi"></a>
 
-[Run your own](#run-your-own) · [Make it yours](docs/prompts.md) · [Setup guide](docs/setup.md) · [Free-plan limits](docs/limites.md) · [🇵🇹 Português](README.pt-PT.md)
+[Website](https://bacoinz.github.io/nectr/) · [Run your own](#run-your-own) · [Make it yours](docs/prompts.md) · [Setup guide](docs/setup.md) · [Free-plan limits](docs/limites.md) · [🇵🇹 Português](README.pt-PT.md)
 
 <img src="docs/screenshots/admin-track-desktop.png" alt="The owner's track page: waveform, player, loudness and versions" width="100%">
 
