@@ -1,8 +1,6 @@
 <div align="center">
 
-<img src="public/favicon.svg" alt="nectr logo" width="96" height="96">
-
-# nectr
+<img src="docs/screenshots/cover.png" alt="nectr: your unreleased music, your own cloud" width="100%">
 
 **Share unreleased music privately and get feedback pinned to the exact second.**<br>
 Your own cloud of tracks, versions and listening links, on Cloudflare's free plans.

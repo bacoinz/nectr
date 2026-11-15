@@ -1,8 +1,6 @@
 <div align="center">
 
-<img src="public/favicon.svg" alt="logo da nectr" width="96" height="96">
-
-# nectr
+<img src="docs/screenshots/cover.png" alt="nectr: a tua música por lançar, na tua própria cloud" width="100%">
 
 **Partilha música por lançar em privado e recebe comentários presos ao segundo certo.**
 
