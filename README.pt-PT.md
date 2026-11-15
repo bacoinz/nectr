@@ -6,7 +6,6 @@
 
 [Site](https://bacoinz.github.io/nectr/) · [Ter a tua](#ter-a-tua) · [Adaptar](docs/prompts.md) · [Setup](docs/setup.md) · [☕ Ko-fi](https://ko-fi.com/bacoinz) · [🇬🇧 English](README.md)
 
-<img src="docs/screenshots/admin-track-desktop.png" alt="Página da faixa do dono: forma de onda, leitor, loudness e versões" width="100%">
 
 </div>
 
