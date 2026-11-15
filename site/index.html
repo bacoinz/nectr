@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="en" data-lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>nectr · your unreleased music, your own cloud</title>
+<meta name="description" content="Share unreleased music privately and get feedback pinned to the exact second. Self-hosted, free on Cloudflare.">
+<meta property="og:title" content="nectr · your unreleased music, your own cloud">
+<meta property="og:description" content="Private links, comments at the exact second, voice notes, versions, loudness. Self-hosted and free on Cloudflare.">
+<meta property="og:image" content="https://bacoinz.github.io/nectr/img/cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#111014">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<style>
+@font-face{font-family:"Bricolage";src:url(fonts/bricolage-grotesque-latin-wght-normal.woff2) format("woff2");font-weight:200 800;font-display:swap}
+@font-face{font-family:"Figtree";src:url(fonts/figtree-latin-wght-normal.woff2) format("woff2");font-weight:300 900;font-display:swap}
+@font-face{font-family:"JBM";src:url(fonts/jetbrains-mono-latin-wght-normal.woff2) format("woff2");font-weight:100 800;font-display:swap}
+:root{--bg:#111014;--surface:#18161d;--surface-2:#221f29;--line:#2d2935;--fg:#f1eef6;--muted:#a6a1b3;--faint:#736e81;--honey:#f4b740;--ink:#1d1404;--coral:#ff7a59;--grad:linear-gradient(135deg,#ffc86b,#ff7a59);--r:18px;--w:1160px}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+html{overflow-x:clip}
+body{margin:0;background:var(--bg);color:var(--fg);font:400 17px/1.6 Figtree,system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+html[data-lang=en] [lang=pt],html[data-lang=pt] [lang=en]{display:none}
+a{color:inherit}
+img{max-width:100%;height:auto;display:block}
+.wrap{max-width:var(--w);margin:0 auto;padding:0 24px}
+h1,h2,h3{font-family:Bricolage,Figtree,sans-serif;letter-spacing:-.025em;line-height:1.05;margin:0}
+h2{font-size:clamp(34px,4.6vw,56px);font-weight:800}
+h3{font-size:22px;font-weight:700;letter-spacing:-.01em}
+.mono{font-family:JBM,ui-monospace,monospace}
+.eyebrow{font:700 13px/1 JBM,monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--honey);margin-bottom:18px}
+.lead{font-size:clamp(18px,1.6vw,21px);color:var(--muted);max-width:640px}
+.hl{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+
+/* nav */
+nav{position:sticky;top:0;z-index:10;background:color-mix(in srgb,var(--bg) 78%,transparent);backdrop-filter:blur(14px);border-bottom:1px solid transparent;transition:border-color .2s}
+nav.scrolled{border-bottom-color:var(--line)}
+nav .wrap{display:flex;align-items:center;gap:16px;height:64px}
+.brand{display:flex;align-items:center;gap:10px;font:800 24px Bricolage,sans-serif;letter-spacing:-.03em;text-decoration:none}
+.brand img{width:30px;height:30px}
+nav .sp{flex:1}
+nav .links a{color:var(--muted);text-decoration:none;font-weight:600;font-size:15px;margin-left:22px}
+nav .links a:hover{color:var(--fg)}
+.lang{display:flex;border:1px solid var(--line);border-radius:999px;padding:3px}
+.lang button{all:unset;cursor:pointer;font:700 12px JBM,monospace;padding:6px 10px;border-radius:999px;color:var(--muted)}
+.lang button[aria-pressed=true]{background:var(--surface-2);color:var(--fg)}
+.btn{display:inline-flex;align-items:center;gap:10px;padding:14px 22px;border-radius:999px;font-weight:700;font-size:16px;text-decoration:none;border:1px solid var(--line);transition:transform .15s,background .15s}
+.btn:hover{transform:translateY(-2px)}
+.btn svg{width:20px;height:20px}
+.btn.primary{background:var(--honey);color:var(--ink);border-color:var(--honey)}
+.btn.ghost{background:var(--surface)}
+.btn.ghost:hover{background:var(--surface-2)}
+
+/* hero */
+.hero{position:relative;padding:72px 0 40px;text-align:center}
+.hero::before{content:"";position:absolute;inset:-200px 0 auto;height:900px;background:radial-gradient(600px 380px at 50% 30%,rgba(244,183,64,.18),transparent 70%),radial-gradient(500px 300px at 80% 10%,rgba(255,122,89,.12),transparent 70%);pointer-events:none;z-index:-1}
+.hero .pill{display:inline-flex;gap:8px;align-items:center;padding:7px 14px;border:1px solid var(--line);border-radius:999px;background:var(--surface);font:600 13px JBM,monospace;color:var(--muted)}
+.hero .pill b{color:var(--honey);font-weight:700}
+.hero h1{font-size:clamp(46px,8vw,104px);font-weight:800;margin:26px auto 22px;max-width:980px}
+.hero .lead{margin:0 auto}
+.cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:34px 0 16px}
+.note{font-size:14px;color:var(--faint)}
+.stage{position:relative;margin:56px auto 0;max-width:1100px}
+.stage .desk{border-radius:16px;border:1px solid var(--line);box-shadow:0 50px 140px rgba(0,0,0,.65),0 0 0 1px rgba(255,255,255,.02)}
+.stage .phone{position:absolute;right:-28px;bottom:-60px;width:24%;border-radius:30px;border:8px solid #050507;box-shadow:0 40px 100px rgba(0,0,0,.75)}
+
+/* sections */
+section{padding:120px 0}
+.center{text-align:center}
+.center .lead{margin:20px auto 0}
+
+/* problem */
+.chaos{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:56px}
+.chaos>div{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:26px;text-align:left}
+.chaos .ic{font-size:28px;margin-bottom:12px}
+.chaos p{margin:6px 0 0;color:var(--muted)}
+.chaos code{font:500 14px JBM,monospace;background:var(--surface-2);padding:2px 7px;border-radius:6px;color:var(--fg)}
+
+/* features */
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:56px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:28px;transition:border-color .2s,transform .2s}
+.card:hover{border-color:#433d4e;transform:translateY(-3px)}
+.card .ic{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:rgba(244,183,64,.12);color:var(--honey);margin-bottom:18px}
+.card .ic svg{width:22px;height:22px}
+.card p{margin:10px 0 0;color:var(--muted);font-size:16px}
+
+/* split */
+.split{display:grid;grid-template-columns:1.05fr .95fr;gap:64px;align-items:center}
+.split.rev{grid-template-columns:.95fr 1.05fr}
+.split.rev .txt{order:2}
+.split ul{list-style:none;padding:0;margin:28px 0 0}
+.split li{padding:12px 0 12px 34px;position:relative;border-top:1px solid var(--line);color:var(--muted)}
+.split li b{color:var(--fg);font-weight:600}
+.split li::before{content:"";position:absolute;left:4px;top:20px;width:12px;height:12px;border-radius:50%;background:var(--grad)}
+.shot{border-radius:16px;border:1px solid var(--line);box-shadow:0 30px 90px rgba(0,0,0,.55)}
+.phones{display:grid;grid-template-columns:1fr 1fr;gap:22px;max-width:520px;margin-left:auto}
+.phones img{border-radius:26px;border:7px solid #050507;box-shadow:0 30px 80px rgba(0,0,0,.6)}
+.phones img:nth-child(2){margin-top:56px}
+
+/* cost */
+.cost{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-top:56px}
+.cost>div{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:26px}
+.cost .n{font:800 40px Bricolage,sans-serif;letter-spacing:-.03em}
+.cost .k{font:700 12px JBM,monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--honey)}
+.cost p{margin:8px 0 0;color:var(--muted);font-size:15px}
+.zero{margin:48px auto 0;display:inline-flex;align-items:baseline;gap:14px;font-family:Bricolage,sans-serif}
+.zero b{font-size:clamp(70px,10vw,120px);font-weight:800;letter-spacing:-.05em;line-height:1}
+.zero span{font-size:22px;color:var(--muted)}
+
+/* run */
+.steps{counter-reset:s;display:grid;gap:12px;margin-top:40px}
+.steps>div{counter-increment:s;display:grid;grid-template-columns:48px 1fr;gap:16px;align-items:start;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
+.steps>div::before{content:counter(s);width:36px;height:36px;border-radius:10px;background:var(--surface-2);display:grid;place-items:center;font:700 15px JBM,monospace;color:var(--honey)}
+.steps p{margin:6px 0 0;color:var(--muted);font-size:15px}
+pre{margin:0;background:#0b0a0e;border:1px solid var(--line);border-radius:14px;padding:22px;overflow:auto;font:500 14px/1.7 JBM,monospace;color:#d9d4e3}
+pre .c{color:var(--faint)}
+pre .p{color:var(--honey)}
+
+/* ideas */
+.ideas{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:56px}
+.ideas>div{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:24px}
+.ideas .e{font-size:30px}
+.ideas h3{margin-top:12px}
+.ideas p{margin:8px 0 0;color:var(--muted);font-size:15px}
+
+/* final */
+.final{position:relative;margin:0 24px;border-radius:28px;padding:96px 24px;text-align:center;overflow:hidden;background:radial-gradient(700px 300px at 50% 0%,rgba(244,183,64,.22),transparent 70%),var(--surface);border:1px solid var(--line)}
+.final h2{max-width:760px;margin:0 auto}
+footer{padding:56px 0 64px;color:var(--faint);font-size:14px}
+footer .wrap{display:flex;gap:20px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+footer a{color:var(--muted)}
+
+/* reveal */
+.rv{opacity:0;transform:translateY(28px);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.7,.2,1)}
+.rv.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}html{scroll-behavior:auto}}
+
+@media (max-width:900px){
+  nav .links{display:none}
+  section{padding:84px 0}
+  .chaos,.grid,.ideas{grid-template-columns:1fr}
+  .cost{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .split,.split.rev{grid-template-columns:1fr;gap:40px}
+  .split.rev .txt{order:0}
+  .phones{margin:0 auto}
+  .stage .phone{right:0;bottom:-30px;width:30%;border-width:5px;border-radius:20px}
+}
+</style>
+</head>
+<body>
+
+<nav id="nav"><div class="wrap">
+  <a class="brand" href="#top"><img src="favicon.svg" alt="">nectr</a>
+  <span class="sp"></span>
+  <span class="links">
+    <a href="#features"><span lang="en">Features</span><span lang="pt">Funcionalidades</span></a>
+    <a href="#cost"><span lang="en">Cost</span><span lang="pt">Custo</span></a>
+    <a href="#run"><span lang="en">Run your own</span><span lang="pt">Ter a tua</span></a>
+    <a href="https://github.com/bacoinz/nectr">GitHub</a>
+  </span>
+  <div class="lang" role="group" aria-label="Language">
+    <button type="button" data-l="en" aria-pressed="true">EN</button>
+    <button type="button" data-l="pt" aria-pressed="false">PT</button>
+  </div>
+</div></nav>
+
+<header class="hero" id="top"><div class="wrap">
+  <span class="pill rv"><b>●</b> <span lang="en">Self-hosted · free on Cloudflare · open source</span><span lang="pt">Na tua conta · grátis na Cloudflare · código aberto</span></span>
+  <h1 class="rv"><span lang="en">Your unreleased music,<br><span class="hl">your own cloud.</span></span><span lang="pt">A tua música por lançar,<br><span class="hl">na tua cloud.</span></span></h1>
+  <p class="lead rv"><span lang="en">Share private links. Get feedback pinned to the exact second, typed or as voice notes. Versions, A/B, loudness and lyrics, on your own account, for €0 a month.</span><span lang="pt">Partilha links privados. Recebe comentários presos ao segundo certo, por escrito ou com notas de voz. Versões, A/B, loudness e letras, na tua própria conta, por 0 € por mês.</span></p>
+  <div class="cta rv">
+    <a class="btn primary" href="https://github.com/bacoinz/nectr"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2.2c-3.3.7-4-1.4-4-1.4-.6-1.4-1.4-1.8-1.4-1.8-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1.1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.8-1.6-2.7-.3-5.5-1.3-5.5-5.9 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17.3 4.7 18.3 5 18.3 5c.7 1.7.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .5z"/></svg><span lang="en">Get it on GitHub</span><span lang="pt">Ver no GitHub</span></a>
+    <a class="btn ghost" href="https://ko-fi.com/bacoinz"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 8h1a4 4 0 1 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"/><path d="M6 2v2M10 2v2M14 2v2"/></svg>Ko-fi</a>
+  </div>
+  <p class="note rv"><span lang="en">The app's interface is in European Portuguese, and you are free to translate it.</span><span lang="pt">A interface da app está em português de Portugal, e podes traduzi-la à vontade.</span></p>
+  <div class="stage rv">
+    <img class="desk" src="img/admin-track-desktop.png" alt="The owner's track page with the waveform player" width="2880" height="1800">
+    <img class="phone" src="img/guest-track-phone.png" alt="The guest player on a phone" width="1170" height="2532" loading="lazy">
+  </div>
+</div></header>
+
+<section class="center"><div class="wrap">
+  <div class="eyebrow rv"><span lang="en">The problem</span><span lang="pt">O problema</span></div>
+  <h2 class="rv"><span lang="en">Sending unreleased songs is a mess.</span><span lang="pt">Enviar músicas por lançar é uma confusão.</span></h2>
+  <div class="chaos">
+    <div class="rv"><div class="ic">⏳</div><h3><span lang="en">Links that expire</span><span lang="pt">Links que expiram</span></h3><p><span lang="en">A week later the artist asks for the file again.</span><span lang="pt">Uma semana depois o artista pede o ficheiro outra vez.</span></p></div>
+    <div class="rv"><div class="ic">🗂️</div><h3><span lang="en">Which version?</span><span lang="pt">Qual versão?</span></h3><p><span lang="en">A folder of <code>final_v7_REAL.wav</code>, and nobody is sure which one they heard.</span><span lang="pt">Uma pasta com <code>final_v7_REAL.wav</code>, e ninguém sabe ao certo qual ouviu.</span></p></div>
+    <div class="rv"><div class="ic">💬</div><h3><span lang="en">Lost feedback</span><span lang="pt">Comentários perdidos</span></h3><p><span lang="en">"Around 1:20 the vocal…", buried in a chat between memes.</span><span lang="pt">"Lá para o 1:20 a voz…", perdido num chat entre memes.</span></p></div>
+  </div>
+  <p class="lead rv" style="margin-top:40px"><span lang="en">The services that fix this charge a monthly fee and keep your masters on their servers. nectr does the same job on <b style="color:var(--fg)">your</b> account.</span><span lang="pt">Os serviços que resolvem isto cobram uma mensalidade e guardam os teus masters nos servidores deles. A nectr faz o mesmo na <b style="color:var(--fg)">tua</b> conta.</span></p>
+</div></section>
+
+<section id="features" style="padding-top:40px"><div class="wrap">
+  <div class="split">
+    <div class="txt">
+      <div class="eyebrow rv"><span lang="en">Feedback</span><span lang="pt">Comentários</span></div>
+      <h2 class="rv"><span lang="en">Comments at the <span class="hl">exact second.</span></span><span lang="pt">Comentários no <span class="hl">segundo certo.</span></span></h2>
+      <ul>
+        <li class="rv"><span lang="en"><b>A second or a range</b>, typed or as a voice note recorded in the browser. They appear as markers on the waveform.</span><span lang="pt"><b>Um segundo ou um intervalo</b>, por escrito ou com uma nota de voz gravada no browser. Aparecem como marcas na forma de onda.</span></li>
+        <li class="rv"><span lang="en"><b>Requests</b> are marked open or done, along with the version that fixed them. One page lists everything still open.</span><span lang="pt"><b>Pedidos</b> marcados como abertos ou feitos, com a versão que os resolveu. Uma página junta tudo o que está por fazer.</span></li>
+        <li class="rv"><span lang="en"><b>Private notes</b> for yourself, next to the public replies.</span><span lang="pt"><b>Notas privadas</b> só para ti, ao lado das respostas públicas.</span></li>
+        <li class="rv"><span lang="en"><b>Notifications</b> on your phone when someone comments.</span><span lang="pt"><b>Avisos</b> no telemóvel quando alguém comenta.</span></li>
+      </ul>
+    </div>
+    <img class="shot rv" src="img/admin-track-desktop.png" alt="Track page with the waveform, comments and versions" loading="lazy" width="2880" height="1800">
+  </div>
+</div></section>
+
+<section style="padding-top:0"><div class="wrap">
+  <div class="split rev">
+    <div class="txt">
+      <div class="eyebrow rv"><span lang="en">Sharing</span><span lang="pt">Partilha</span></div>
+      <h2 class="rv"><span lang="en">Private links. <span class="hl">No accounts.</span></span><span lang="pt">Links privados. <span class="hl">Sem contas.</span></span></h2>
+      <ul>
+        <li class="rv"><span lang="en"><b>An artist, a project, a folder or one track.</b> Each link can have a password, an expiry date, downloads on or off, and a choice of which versions it shows.</span><span lang="pt"><b>Um artista, um projeto, uma pasta ou uma faixa.</b> Cada link pode ter password, validade, download ligado ou desligado, e a escolha das versões que mostra.</span></li>
+        <li class="rv"><span lang="en"><b>Made for phones</b>, with the cover on the lock screen and the controls in the notification.</span><span lang="pt"><b>Feito para o telemóvel</b>, com a capa no ecrã bloqueado e os controlos na notificação.</span></li>
+        <li class="rv"><span lang="en"><b>See who came in</b>, and revoke a link at any time.</span><span lang="pt"><b>Vês quem entrou</b> e revogas um link quando quiseres.</span></li>
+        <li class="rv"><span lang="en"><b>Re-shares, if you allow them:</b> a guest passes on one track as a listen-only link.</span><span lang="pt"><b>Partilhas, se deixares:</b> um convidado passa uma faixa a outra pessoa num link só para ouvir.</span></li>
+      </ul>
+    </div>
+    <div class="phones">
+      <img class="rv" src="img/guest-link-phone.png" alt="A shared project on a phone" loading="lazy" width="1170" height="2532">
+      <img class="rv" src="img/guest-track-phone.png" alt="The guest player on a phone" loading="lazy" width="1170" height="2532">
+    </div>
+  </div>
+</div></section>
+
+<section class="center" style="padding-top:0"><div class="wrap">
+  <div class="eyebrow rv"><span lang="en">Everything else</span><span lang="pt">E mais</span></div>
+  <h2 class="rv"><span lang="en">Built by a producer, for producers.</span><span lang="pt">Feita por um produtor, para produtores.</span></h2>
+  <div class="grid" style="text-align:left">
+    <div class="card rv"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 12h2M7 8v8M11 4v16M15 7v10M19 10v4M21 12h0"/></svg></div><h3><span lang="en">Loudness on upload</span><span lang="pt">Loudness no upload</span></h3><p><span lang="en">Integrated LUFS, LRA and true peak (EBU R128). They match ffmpeg to within 0.04, and MP3s are measured without clipping.</span><span lang="pt">LUFS integrado, LRA e true peak (EBU R128). Batem certo com o ffmpeg a menos de 0,04, e os MP3 são medidos sem clipping.</span></p></div>
+    <div class="card rv"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4v16M17 4v16M4 8h6M14 16h6"/></svg></div><h3><span lang="en">Versions & instant A/B</span><span lang="pt">Versões e A/B instantâneo</span></h3><p><span lang="en">Drop a new mix on a track to make it the latest version. Switch between versions without losing your place (key B).</span><span lang="pt">Larga uma mistura nova numa faixa e ela passa a última versão. Troca de versão sem perder o ponto (tecla B).</span></p></div>
+    <div class="card rv"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h10M4 18h13"/></svg></div><h3><span lang="en">Synced lyrics</span><span lang="pt">Letras sincronizadas</span></h3><p><span lang="en">Import an .lrc file or sync the lyrics by tapping along. They show karaoke-style for you and your guests.</span><span lang="pt">Importa um .lrc ou sincroniza a letra com toques. Aparece em estilo karaoke para ti e para os convidados.</span></p></div>
+    <div class="card rv"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h6l2 2h10v10H3z"/></svg></div><h3><span lang="en">Your whole catalogue</span><span lang="pt">O catálogo inteiro</span></h3><p><span lang="en">Artists, albums, EPs, WIPs and live sets, with covers, colours and search. A whole folder uploads in one drop.</span><span lang="pt">Artistas, álbuns, EPs, WIPs e sets ao vivo, com capas, cores e pesquisa. Uma pasta inteira entra de uma vez.</span></p></div>
+    <div class="card rv"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg></div><h3><span lang="en">Installable app</span><span lang="pt">Instala-se como app</span></h3><p><span lang="en">A PWA on phone and desktop, with push notifications, light and dark themes, and keyboard shortcuts.</span><span lang="pt">PWA no telemóvel e no computador, com avisos, tema claro e escuro, e atalhos de teclado.</span></p></div>
+    <div class="card rv"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div><h3><span lang="en">Private by design</span><span lang="pt">Privada de raiz</span></h3><p><span lang="en">Your files stay on your own storage. File names, session names and private notes never reach a guest.</span><span lang="pt">Os ficheiros ficam no teu armazenamento. Nomes de ficheiros, sessões e notas privadas nunca chegam a um convidado.</span></p></div>
+  </div>
+</div></section>
+
+<section style="padding-top:0"><div class="wrap">
+  <div class="split">
+    <div class="txt">
+      <div class="eyebrow rv"><span lang="en">The library</span><span lang="pt">A biblioteca</span></div>
+      <h2 class="rv"><span lang="en">Every track, every mix, <span class="hl">at a glance.</span></span><span lang="pt">Cada faixa, cada mistura, <span class="hl">num relance.</span></span></h2>
+      <p class="lead rv" style="margin-top:20px"><span lang="en">Format, sample rate, LUFS, true peak, version and open requests, all in one table.</span><span lang="pt">Formato, sample rate, LUFS, true peak, versão e pedidos abertos, tudo numa tabela.</span></p>
+    </div>
+    <img class="shot rv" src="img/admin-project-desktop.png" alt="A project's tracks with format, loudness and versions" loading="lazy" width="2880" height="1800">
+  </div>
+</div></section>
+
+<section class="center" id="cost" style="padding-top:20px"><div class="wrap">
+  <div class="eyebrow rv"><span lang="en">Cost</span><span lang="pt">Custo</span></div>
+  <h2 class="rv"><span lang="en">No subscription. Ever.</span><span lang="pt">Sem mensalidade. Nunca.</span></h2>
+  <div class="zero rv"><b class="hl"><span lang="en">€0</span><span lang="pt">0 €</span></b><span lang="en">/ month</span><span lang="pt">/ mês</span></div>
+  <p class="lead rv"><span lang="en">It runs inside Cloudflare's free plans, on an account that belongs to you.</span><span lang="pt">Corre dentro dos planos gratuitos da Cloudflare, numa conta que é tua.</span></p>
+  <div class="cost" style="text-align:left">
+    <div class="rv"><div class="k">R2</div><div class="n">10 GB</div><p><span lang="en">≈115 five-minute 24-bit WAVs, with no egress fees</span><span lang="pt">≈115 WAV de 5 minutos a 24 bit, sem custos de saída</span></p></div>
+    <div class="rv"><div class="k">Workers</div><div class="n">100k</div><p><span lang="en">requests a day, far more than you and your clients will use</span><span lang="pt">pedidos por dia, muito mais do que tu e os clientes usam</span></p></div>
+    <div class="rv"><div class="k">D1</div><div class="n">5 GB</div><p><span lang="en">of database, enough for years of comments</span><span lang="pt">de base de dados, chega para anos de comentários</span></p></div>
+    <div class="rv"><div class="k">Access</div><div class="n">50</div><p><span lang="en">users can log in, and only you need to</span><span lang="pt">utilizadores podem entrar, e só tu precisas</span></p></div>
+  </div>
+</div></section>
+
+<section id="run" style="padding-top:20px"><div class="wrap">
+  <div class="split" style="align-items:start">
+    <div class="txt">
+      <div class="eyebrow rv"><span lang="en">Run your own</span><span lang="pt">Ter a tua</span></div>
+      <h2 class="rv"><span lang="en">Online in about <span class="hl">30 minutes.</span></span><span lang="pt">Online em cerca de <span class="hl">30 minutos.</span></span></h2>
+      <div class="steps">
+        <div class="rv"><span><b><span lang="en">Try it locally</span><span lang="pt">Experimenta no computador</span></b><p><span lang="en">A full copy runs on your computer, with no account needed.</span><span lang="pt">Uma cópia completa corre no teu computador, sem conta.</span></p></span></div>
+        <div class="rv"><span><b><span lang="en">Create the storage</span><span lang="pt">Cria o armazenamento</span></b><p><span lang="en">An R2 bucket and a D1 database on your free Cloudflare account.</span><span lang="pt">Um bucket R2 e uma base de dados D1 na tua conta gratuita da Cloudflare.</span></p></span></div>
+        <div class="rv"><span><b><span lang="en">Deploy</span><span lang="pt">Publica</span></b><p><span lang="en"><span class="mono">npm run deploy</span>, then protect your pages with Access (a one-time PIN by email).</span><span lang="pt"><span class="mono">npm run deploy</span>, e depois protege as tuas páginas com o Access (um código por email).</span></p></span></div>
+      </div>
+      <p class="note rv" style="margin-top:18px"><span lang="en">Prefer a Raspberry Pi or a NAS? A ready-made prompt swaps D1, R2 and Access for SQLite, a folder on disk and your own login.</span><span lang="pt">Preferes um Raspberry Pi ou um NAS? Um prompt pronto troca o D1, o R2 e o Access por SQLite, uma pasta no disco e um login teu.</span></p>
+    </div>
+<pre class="rv"><span class="c"># try it on your computer</span>
+<span class="p">$</span> git clone https://github.com/bacoinz/nectr
+<span class="p">$</span> cd nectr && npm install
+<span class="p">$</span> cp .dev.vars.example .dev.vars
+<span class="p">$</span> npm run db:migrate:local
+<span class="p">$</span> npm run dev
+
+<span class="c"># → http://localhost:5173</span>
+
+<span class="c"># online: follow docs/setup.md, then</span>
+<span class="p">$</span> npm run db:migrate:remote
+<span class="p">$</span> npm run deploy</pre>
+  </div>
+</div></section>
+
+<section class="center" style="padding-top:20px"><div class="wrap">
+  <div class="eyebrow rv"><span lang="en">Make it yours</span><span lang="pt">Adapta-a</span></div>
+  <h2 class="rv"><span lang="en">Not just for music.</span><span lang="pt">Não é só para música.</span></h2>
+  <p class="lead rv"><span lang="en">The code is plain TypeScript and Svelte, and every decision is written down. The repo has ready-to-paste prompts for AI coding assistants.</span><span lang="pt">O código é TypeScript e Svelte simples, e cada decisão está escrita. O repositório traz prompts prontos para assistentes de IA.</span></p>
+  <div class="ideas" style="text-align:left">
+    <div class="rv"><div class="e">🌍</div><h3><span lang="en">Your language</span><span lang="pt">A tua língua</span></h3><p><span lang="en">Translate the interface and the server's messages.</span><span lang="pt">Traduz a interface e as mensagens do servidor.</span></p></div>
+    <div class="rv"><div class="e">🎬</div><h3><span lang="en">Video review</span><span lang="pt">Revisão de vídeo</span></h3><p><span lang="en">Frame-accurate comments on cuts and edits.</span><span lang="pt">Comentários ao frame em cortes e montagens.</span></p></div>
+    <div class="rv"><div class="e">📷</div><h3><span lang="en">Photo proofing</span><span lang="pt">Provas de fotografia</span></h3><p><span lang="en">Galleries, favourites, and comments on a point of the image.</span><span lang="pt">Galerias, favoritas e comentários num ponto da imagem.</span></p></div>
+    <div class="rv"><div class="e">🎙️</div><h3>Podcasts</h3><p><span lang="en">Takes as versions, with notes from the producer.</span><span lang="pt">Takes como versões, com notas do produtor.</span></p></div>
+    <div class="rv"><div class="e">🎨</div><h3><span lang="en">Design rounds</span><span lang="pt">Rondas de design</span></h3><p><span lang="en">Logo and cover rounds, with feedback on each round.</span><span lang="pt">Rondas de logos e capas, com opinião em cada ronda.</span></p></div>
+    <div class="rv"><div class="e">🍓</div><h3>Raspberry Pi</h3><p><span lang="en">SQLite and files on disk, with as much space as your drive.</span><span lang="pt">SQLite e ficheiros no disco, com o espaço que o disco tiver.</span></p></div>
+  </div>
+</div></section>
+
+<div class="final rv">
+  <h2><span lang="en">Stop renting a place <span class="hl">for your own music.</span></span><span lang="pt">Deixa de pagar renda <span class="hl">pela tua própria música.</span></span></h2>
+  <div class="cta" style="margin-bottom:0">
+    <a class="btn primary" href="https://github.com/bacoinz/nectr"><span lang="en">Get nectr on GitHub</span><span lang="pt">Ver a nectr no GitHub</span></a>
+    <a class="btn ghost" href="https://ko-fi.com/bacoinz"><span lang="en">Buy me a coffee</span><span lang="pt">Paga-me um café</span></a>
+  </div>
+</div>
+
+<footer><div class="wrap">
+  <span>nectr · <a href="https://github.com/bacoinz/nectr/blob/main/LICENSE.md">PolyForm Noncommercial</a> · <span lang="en">free for personal use, not for resale</span><span lang="pt">livre para uso pessoal, não para revenda</span></span>
+  <span><span lang="en">Screenshots from a real library, with names and faces hidden.</span><span lang="pt">Capturas de uma biblioteca real, com nomes e caras escondidos.</span></span>
+</div></footer>
+
+<script>
+(function () {
+  var root = document.documentElement;
+  function setLang(l) {
+    root.dataset.lang = l;
+    root.lang = l === "pt" ? "pt-PT" : "en";
+    document.querySelectorAll(".lang button").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.l === l)); });
+    try { localStorage.setItem("nectr.site.lang", l); } catch (e) {}
+  }
+  var saved = null;
+  try { saved = localStorage.getItem("nectr.site.lang"); } catch (e) {}
+  setLang(saved || (/^pt\b/i.test(navigator.language || "") ? "pt" : "en"));
+  document.querySelectorAll(".lang button").forEach(function (b) { b.addEventListener("click", function () { setLang(b.dataset.l); }); });
+
+  var nav = document.getElementById("nav");
+  addEventListener("scroll", function () { nav.classList.toggle("scrolled", scrollY > 8); }, { passive: true });
+
+  var els = document.querySelectorAll(".rv");
+  if (!("IntersectionObserver" in window)) { els.forEach(function (e) { e.classList.add("in"); }); return; }
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add("in"); io.unobserve(en.target); } });
+  }, { rootMargin: "0px 0px -8% 0px" });
+  els.forEach(function (e, i) { e.style.transitionDelay = (i % 4) * 60 + "ms"; io.observe(e); });
+})();
+</script>
+</body>
+</html>
